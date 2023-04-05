@@ -17,18 +17,23 @@
           placeholder="Enter your username (should be unique)"
         />
       </div>
-      <div class="chat-container">
+      <div class="users-container">
         <div class="users" id="users"></div>
-        <div class="message-container">
-          <div class="chat-body" id="messages"></div>
-          <div class="message-box">
-            <input
-              type="text"
-              id="message-input"
-              placeholder="Enter your message..."
-            />
-          </div>
+      </div>
+      <div class="message-container">
+        <div class = "topcontainer" id="top">
+          <button onclick = backToUser() class="back" type="button">&#60;</button>
+          <div class="active" id="active"></div>
         </div>
+        <div class="chat-body" id="messages"></div>
+        <div class="message-box">
+          <input
+            type="text"
+            id="message-input"
+            placeholder="Enter your message..."
+          />
+        </div>
+      </div>
       </div>
     </div>
     <!-- JavaScipt Stream SDK -->

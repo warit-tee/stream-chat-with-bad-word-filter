@@ -19,13 +19,15 @@ checkAuthState()
 async function checkAuthState() {
     if (!user.value) {
         document.getElementById("login-block").style.display = "grid"
-        document.getElementsByClassName("chat-container")[0].style.display = "none";
+        document.getElementsByClassName("message-container")[0].style.display = "none";
+        document.getElementsByClassName("users-container")[0].style.display = "none"
     } else {
         username = user.value
 
         await initializeClient()
 
-        document.getElementsByClassName("chat-container")[0].style.display = "grid";
+        document.getElementsByClassName("message-container")[0].style.display = "none";
+        document.getElementsByClassName("users-container")[0].style.display = "grid"
         document.getElementById("login-block").style.display = "none"
     }
 }
@@ -35,7 +37,7 @@ async function initializeClient() {
 
     await client.setUser({
         id: username,
-        name: "Jon Snow", // Update this name dynamically
+        name: username, // Update this name dynamically
         image: "https://bit.ly/2u9Vc0r",
     }, token); // token generated from our Node server
 
@@ -52,22 +54,42 @@ function populateUsers(users) {
 
     const usersElement = document.getElementById("users")
 
+    
     otherUsers.map(user => {
         const userElement = document.createElement("div")
         userElement.className = "user"
         userElement.id = user.id
         userElement.textContent = user.id
 
+        const img = document.createElement('img'); 
+        img.src = "pic.png";
+        img.width = "40"
+        userElement.appendChild(img); 
+        
         userElement.onclick = () => selectUserHandler(user)
 
         usersElement.append(userElement)
     })
 }
 
-async function selectUserHandler(userPayload) {
-    if (activeUser === userPayload.id) return // current active user, so do not proceed...
+async function backToUser(){
+    // remove the 'active' class from all users
+    const allUsers = document.getElementsByClassName("user")
+    Array.from(allUsers).forEach(user => {
+        user.classList.remove('active')
+    })
+    document.getElementsByClassName("message-container")[0].style.display = "none";
+    document.getElementsByClassName("users-container")[0].style.display = "grid";
+}
 
+async function selectUserHandler(userPayload) {
+    
     activeUser = userPayload.id
+    document.getElementsByClassName("message-container")[0].style.display = "grid";
+    document.getElementsByClassName("users-container")[0].style.display = "none";
+
+    const selectedUser = document.getElementById("active")
+    selectedUser.textContent = activeUser
 
     // remove the 'active' class from all users
     const allUsers = document.getElementsByClassName("user")
@@ -84,6 +106,7 @@ async function selectUserHandler(userPayload) {
     messageContainer.innerHTML = ''
 
     await initializeChannel([username, userPayload.id])
+
 }
 
 async function listUsers() {
@@ -135,6 +158,7 @@ function appendMessage(message) {
 
     // Then append the messageDiv to the "messages" div
     messageContainer.appendChild(messageDiv)
+    messageContainer.scrollTop = messageContainer.scrollHeight;
 }
 
 const inputElement = document.getElementById("message-input");
